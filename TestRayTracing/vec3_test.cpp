@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "../RayTracingOneWeekend/vec3.h"
-#include "../RayTracingOneWeekend/utilities.h"
 #include "../RayTracingOneWeekend/ray.h"
+#include "../RayTracingOneWeekend/sphere.h"
+#include "../RayTracingOneWeekend/rtweekend.h"
+#include "../RayTracingOneWeekend/hittable_list.h"
 
 TEST(Vec3Class, DeclaringVector)
 {
@@ -153,8 +155,8 @@ TEST(UtilityClass, DoubleEquality)
 	double d02 = 1.00006;
 	double d03 = 1.005;
 
-	EXPECT_TRUE(Utility::DoubleEquality(d01, d02));
-	EXPECT_FALSE(Utility::DoubleEquality(d01, d03));
+	EXPECT_TRUE(DoubleEquality(d01, d02));
+	EXPECT_FALSE(DoubleEquality(d01, d03));
 
 }
 
@@ -184,6 +186,78 @@ TEST(RayClass, atMethod)
 	point3 answ (5, 0, 0);
 
 	EXPECT_EQ(r01.at(5), answ);
+}
+
+TEST(SphereObject, SphereConstructor)
+{
+	sphere s01; //unit sphere centered (0,0,0) with radius 1.0
+
+	EXPECT_EQ(s01.center, point3(0, 0, 0));
+	EXPECT_EQ(s01.radius, 1.0); 
+
+	sphere s02(point3(1, 1, 1), 0.5); 
+
+	EXPECT_EQ(s02.center, point3(1, 1, 1));
+	EXPECT_EQ(s02.radius, 0.5);
+}
+
+TEST(SphereObject, SphereHit)
+{
+	sphere s01; //unit sphere centered (0,0,0) with radius 1.0 
+	ray r01(point3(0, 0, -5), vec3(0, 0, 1));
+	hit_record hits; 
+
+	s01.hit(r01, -1.0, 10.0, hits);
+
+	EXPECT_EQ(hits.t, 4.0);
+	EXPECT_EQ(hits.p, point3(0, 0, -1));
+	EXPECT_EQ(hits.normal, vec3(0, 0, -1));
+	EXPECT_TRUE(hits.front_face);
+}
+
+TEST(SphereObject, RayInsideObjectHit)
+{
+	sphere s01; //unit sphere centered (0,0,0) with radius 1.0 
+	ray r01(point3(0, 0, 0), vec3(0, 0, 1));
+	hit_record hits;
+
+	s01.hit(r01, 0.0, 10.0, hits);
+
+	EXPECT_EQ(hits.t, 1.0);
+	EXPECT_EQ(hits.p, point3(0, 0, 1));
+	EXPECT_EQ(hits.normal, vec3(0, 0, -1));
+	EXPECT_FALSE(hits.front_face);
+
+}
+
+TEST(HittableList, ClassMethods) {
+	hittable_list world;
+	world.add(make_shared<sphere>(point3(0, 0, 0), 1));
+	world.add(make_shared<sphere>(point3(0, 0, 3), 1));
+
+	EXPECT_EQ(world.objects.size(), 2); 
+
+	world.clear(); 
+
+	EXPECT_EQ(world.objects.size(), 0);
+}
+
+TEST(HittableList, HitMethod) {
+	hit_record result;
+
+	hittable_list world;
+	world.add(make_shared<sphere>(point3(0, 0, 0), 1));
+	world.add(make_shared<sphere>(point3(0, 0, 3), 1));
+
+	ray r01(point3(0, 0, -5), vec3(0, 0, 1)); 
+
+	bool hitAnything = world.hit(r01, 0, infinity, result); 
+
+	EXPECT_TRUE(hitAnything);
+	EXPECT_EQ(result.t, 4.0);
+	EXPECT_EQ(result.p, point3(0, 0, -1));
+	EXPECT_EQ(result.normal, vec3(0, 0, -1));
+	EXPECT_TRUE(result.front_face);
 }
 
 int main(int argc, char* argv[])

@@ -24,7 +24,7 @@ public:
 
 // Consider making instance variables private 
 // since origin() and direction() methods return variables
-public:
+private:
 	point3 orig; 
 	vec3 dir;
 };
