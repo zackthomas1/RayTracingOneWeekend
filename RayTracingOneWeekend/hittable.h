@@ -2,10 +2,10 @@
 #include "ray.h"
 
 struct hit_record {
-	point3 p; // consider renaming 'pos', 'position', or 'hitPosition'
-	vec3 normal; 
-	double t;
-	bool front_face; 
+	point3 p = point3(0, 0, 0); // consider renaming 'pos', 'position', or 'hitPosition'
+	vec3 normal = vec3(0, 0, 0);
+	double t = 0.0;
+	bool front_face = NULL; 
 
 	/// <summary>
 	/// Determines if ray is inside or outside hittable object.
@@ -21,5 +21,14 @@ struct hit_record {
 
 class hittable {
 public: 
+	/// <summary>
+	/// Updates hitRecord with data about closest ray-hittable object intersection 
+	/// to ray origin(ie. camera)
+	/// </summary>
+	/// <param name="r"></param>
+	/// <param name="t_min"></param>
+	/// <param name="t_max"></param>
+	/// <param name="rec"></param>
+	/// <returns></returns>
 	virtual bool hit(const ray& r, double t_min, double t_max, hit_record& rec) const = 0;
 };

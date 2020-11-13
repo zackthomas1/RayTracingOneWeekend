@@ -28,7 +28,15 @@ public:
 	std::vector<shared_ptr<hittable>> objects;
 };
 
-
+/// <summary>
+/// Updates rec(hit_record) to the closet ray-object intersection 
+/// in hittable list
+/// </summary>
+/// <param name="r"></param>
+/// <param name="t_min"></param>
+/// <param name="t_max"></param>
+/// <param name="rec"></param>
+/// <returns></returns>
 bool hittable_list::hit(const ray& r, double t_min, double t_max, hit_record& rec) const {
 	hit_record object_rec; 
 	bool hit_anything = false; 

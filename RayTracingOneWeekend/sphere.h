@@ -18,6 +18,15 @@ public:
 
 };
 
+/// <summary>
+/// Updates hitRecord with data about closest ray-sphere intersection 
+/// to ray origin(ie. camera)
+/// </summary>
+/// <param name="inRay"></param>
+/// <param name="t_min"></param>
+/// <param name="t_max"></param>
+/// <param name="hitRecord"></param>
+/// <returns></returns>
 bool::sphere::hit(const ray& inRay, double t_min, double t_max, hit_record& hitRecord) const
 {
 	vec3 oc = inRay.origin() - center;

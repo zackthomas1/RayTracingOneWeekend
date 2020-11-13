@@ -1,6 +1,7 @@
 #pragma once
 #include <cmath> 
-#include <iostream> 
+#include <iostream>
+
 using std::sqrt; 
 
 class vec3
@@ -78,6 +79,14 @@ public:
 		return (e[0] * e[0]) + (e[1] * e[1]) + (e[2] * e[2]);
 	}
 
+	inline static vec3 random() {
+		return vec3(random_double(), random_double(), random_double());
+	}
+
+	inline static vec3 random(double min, double max) {
+		return vec3(random_double(min, max), random_double(min, max), random_double(min, max));
+	}
+
 // Consider putting above previous public section
 // Also, give variable 'e' a more descriptive name
 // Or even consider not have it as an array, just be three double variables x,y,z
@@ -125,7 +134,8 @@ inline vec3 operator /(const vec3& inVec, double scalar) {
 // and making dot and cross methods static
 /// <summary>
 /// Calculate dot product. 
-/// Smaller value larger the angle between vectors
+/// Smaller value larger the angle between vectors. 
+/// value of zero is equal to 90 degree angle
 /// </summary>
 /// <param name="inVec01"></param>
 /// <param name="inVec02"></param>
@@ -157,4 +167,52 @@ inline vec3 cross(const vec3& inVec01, const vec3& inVec02) {
 /// <returns></returns>
 inline vec3 unit_vector(vec3 inVec) {
 	return inVec / inVec.length();
+}
+
+
+
+// Diffuse scatter methods
+// --------------------------
+
+/// <summary>
+/// Diffuse scatter method.
+/// Generates random vector inside of unit sphere
+/// whose center is a point that is the intersection point + normal (P + n).
+/// Scatter relation to normal cos^3(X)
+/// </summary>
+/// <returns></returns>
+inline vec3 random_in_unit_sphere() {
+	while (true) {
+		auto p = vec3::random(-1.0, 1.0);
+		if (p.length_squared() >= 1)
+			continue;
+		return p;
+	}
+}
+
+/// <summary>
+/// Diffuse scatter method.
+/// Generates random vector along surface of unit sphere 
+/// whose center is a point that is the intersection point + normal (P + n).
+/// Scatter relation to normal cos(X)
+/// </summary>
+/// <returns></returns>
+vec3 random_unit_vector() {
+	return unit_vector(random_in_unit_sphere());
+}
+
+/// <summary>
+/// Diffuse scatter method.
+/// Generates uniform scatter in same hemisphere as normal.
+/// Scatter has no relation to the normal.
+/// </summary>
+/// <param name="normal"></param>
+/// <returns></returns>
+vec3 random_in_hemisphere(const vec3& normal)
+{
+	vec3 in_unit_sphere = random_in_unit_sphere();
+	if (dot(in_unit_sphere, normal) > 0.0)	// In the same hemisphere as the normal. ie angle less than 90 degrees
+		return in_unit_sphere;
+	else
+		return -in_unit_sphere;
 }

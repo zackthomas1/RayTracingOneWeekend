@@ -1,8 +1,8 @@
 #include "pch.h"
+#include "../RayTracingOneWeekend/rtweekend.h"
 #include "../RayTracingOneWeekend/vec3.h"
 #include "../RayTracingOneWeekend/ray.h"
 #include "../RayTracingOneWeekend/sphere.h"
-#include "../RayTracingOneWeekend/rtweekend.h"
 #include "../RayTracingOneWeekend/hittable_list.h"
 
 TEST(Vec3Class, DeclaringVector)
@@ -149,6 +149,21 @@ TEST(Vec3Class, UnitVector)
 	EXPECT_EQ(unit_vector(v01).length(), 1.0);
 }
 
+TEST(Vec3Class, Random)
+{
+
+}
+
+TEST(Vec3Class, RandomMinMax)
+{
+
+}
+
+TEST(Vec3Class, RandomInUnitSphere)
+{
+
+}
+
 TEST(UtilityClass, DoubleEquality)
 {
 	double d01 = 1.00005; 
@@ -157,7 +172,13 @@ TEST(UtilityClass, DoubleEquality)
 
 	EXPECT_TRUE(DoubleEquality(d01, d02));
 	EXPECT_FALSE(DoubleEquality(d01, d03));
+}
 
+TEST(UtilityClass, Clamp)
+{
+	double result = clamp(2.0, 0.0, 1.0); 
+
+	EXPECT_TRUE(DoubleEquality(result, 1.0));
 }
 
 TEST(RayClass, RayConstruction)

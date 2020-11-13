@@ -2,12 +2,8 @@
 
 #include <cmath>
 #include <limits>
-#include <limits> 
 #include <memory>
 #include <cstdlib>
-
-#include "ray.h"
-#include "vec3.h"
 
 // Using 
 
@@ -34,16 +30,14 @@ inline bool DoubleEquality(double v01, double v02){
 		return false;
 }
 
-inline double random_double() {
-	// Returns a random real in[0,1). 
-	return rand() / (RAND_MAX + 1.0);
-}
-
-inline double random_double(double min, double max) {
-	// Returns a random real in [min, max). 
-	return min + (max - min) * random_double();
-}
-
+/// <summary>
+/// Limits upper and lower value limits by 
+/// setting values above and below min and max to min or max.
+/// </summary>
+/// <param name="x"></param>
+/// <param name="min"></param>
+/// <param name="max"></param>
+/// <returns></returns>
 inline double clamp(double x, double min, double max) {
 	if (x < min)
 		return min;
@@ -51,3 +45,28 @@ inline double clamp(double x, double min, double max) {
 		return max;
 	return x;
 }
+
+/// <summary>
+/// Generates a random floating point number
+/// </summary>
+/// <returns></returns>
+inline double random_double() {
+	// Returns a random real in[0,1). 
+	return rand() / (RAND_MAX + 1.0);
+}
+
+/// <summary>
+/// Generates a random floating point number within given range
+/// </summary>
+/// <param name="min"></param>
+/// <param name="max"></param>
+/// <returns></returns>
+inline double random_double(double min, double max) {
+	// Returns a random real in [min, max). 
+	return min + (max - min) * random_double();
+}
+
+// Common Headers
+
+#include "ray.h"
+#include "vec3.h"
