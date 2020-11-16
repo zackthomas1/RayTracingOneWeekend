@@ -7,6 +7,7 @@
 #include "hittable_list.h"
 #include "sphere.h"
 #include "camera.h"
+#include "material.h"
 
 // Consider moving in ray header file/ ray class
 color ray_color(const ray& r, const hittable& world, int depth) {
@@ -21,12 +22,13 @@ color ray_color(const ray& r, const hittable& world, int depth) {
 	// if an object in the scene is hit
 	if (world.hit(r, 0.001, infinity, rec)) {
 
-		// Diffuse scatter methods. Change for different diffuse methods. PICK ONE ONLY!!!!
-		//point3 target = rec.p + rec.normal + random_in_unit_sphere(); 
-		point3 target = rec.p + rec.normal + random_unit_vector(); 
-		//point3 target = rec.p + random_in_hemisphere(rec.normal); 
+		ray scattered; 
+		color attenuation; 
 
-		return 0.5 * ray_color(ray(rec.p, target - rec.p), world, depth - 1); // absorbs half the energy on each bounce
+		if (rec.mat_ptr->scatter(r, rec, attenuation, scattered))
+			return attenuation * ray_color(scattered, world, depth - 1);
+
+		return color(0, 0, 0);
 	}
 
 	// if NO object is hit render default sky background
@@ -47,12 +49,30 @@ int main()
 
 
 	// World 
-	hittable_list world; 
-	world.add(make_shared<sphere>(point3(0, 0, -1), 0.5)); 
-	world.add(make_shared<sphere>(point3(0, -100.5, -1), 100));
+
+	auto R = cos(pi / 4);
+	hittable_list world;
+
+	auto material_ground = make_shared<lambertian>(color(0.8, 0.8, 0.0));
+	auto material_center = make_shared<lambertian>(color(0.1, 0.2, 0.5));
+	auto material_centerFront = make_shared<dielectric>(1.5);
+	auto material_left = make_shared<metal>(color(0.3, 0.4, 0.5), 0.01);
+	auto material_right = make_shared<metal>(color(0.8, 0.6, 0.2), 0.8); 
+
+	world.add(make_shared<sphere>(point3(0, -100.5, -1), 100, material_ground));
+	world.add(make_shared<sphere>(point3(0, 0, -1.0), 0.45, material_center));
+	world.add(make_shared<sphere>(point3(-1.0, 0, -1.0), 0.5, material_left));
+	world.add(make_shared<sphere>(point3(1.0, 0, -1.0), 0.5, material_right));
+	world.add(make_shared<sphere>(point3(0, 0, -0.25), 0.2, material_centerFront));
 
 	// Camera 
-	camera cam;
+	point3 lookfrom(3, 3, 2);
+	point3 lookat(0, 0, -1);
+	vec3 vup(0, 1, 0);
+	auto dist_to_focus = (lookfrom - lookat).length();
+	auto aperture = 2.0;
+
+	camera cam(lookfrom, lookat, vup, 20, aspect_ratio, aperture, dist_to_focus);
 
 	//	Render
 	std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n"; 

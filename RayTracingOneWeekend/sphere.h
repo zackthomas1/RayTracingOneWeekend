@@ -1,11 +1,16 @@
 #pragma once
 #include "hittable.h"
 #include "vec3.h"
+#include "material.h"
 
 class sphere : public hittable {
 public: 
-	sphere() { center = point3(0, 0, 0); radius = 1.0; }
-	sphere(point3 cen, double r) : center(cen), radius(r) {}
+
+	sphere() { 
+		center = point3(0, 0, 0); radius = 1.0; 
+	}
+	sphere(point3 cen, double r, shared_ptr<material>m = make_shared<lambertian>(color(0.75, 0.75, 0.75))) : center(cen), radius(r), mat_ptr(m) {}
+
 
 	virtual bool hit(const ray& r, double t_min, double t_max, hit_record& rec) const override; 
 
@@ -15,6 +20,7 @@ public:
 public:
 	point3 center; 
 	double radius;
+	shared_ptr<material> mat_ptr;
 
 };
 
@@ -53,6 +59,7 @@ bool::sphere::hit(const ray& inRay, double t_min, double t_max, hit_record& hitR
 	hitRecord.p = inRay.at(hitRecord.t); // Hit position as type point3
 	vec3 outward_normal = (hitRecord.p - center) / radius ; // normal pointing to out from sphere center in direction of ray
 	hitRecord.set_face_normal(inRay, outward_normal); // sets normal in opposite directon of incoming ray
+	hitRecord.mat_ptr = mat_ptr;
 
 	return true;
 }

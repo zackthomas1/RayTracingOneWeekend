@@ -1,9 +1,13 @@
 #pragma once
-#include "ray.h"
+#include "rtweekend.h"
+
+// Foward declaration
+class material;
 
 struct hit_record {
 	point3 p = point3(0, 0, 0); // consider renaming 'pos', 'position', or 'hitPosition'
 	vec3 normal = vec3(0, 0, 0);
+	shared_ptr<material> mat_ptr;
 	double t = 0.0;
 	bool front_face = NULL; 
 
