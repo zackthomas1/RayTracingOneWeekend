@@ -21,7 +21,7 @@ public:
 		auto viewport_height = 2.0 * h; 
 		auto viewport_width = aspect_ratio * viewport_height;
 		
-
+		//
 		w = unit_vector(lookfrom - lookat); 
 		u = unit_vector(cross(vup, w));
 		v = cross(w, u); 
@@ -35,8 +35,8 @@ public:
 	}
 
 	ray get_ray(double s, double t) const {
-		//return ray(origin, lower_left_corner + s * horizontal + t * vertical - origin);
 		
+		//
 		vec3 rd = lens_radius * random_in_unit_disk();
 		vec3 offset = u * rd.x() + v * rd.y();
 

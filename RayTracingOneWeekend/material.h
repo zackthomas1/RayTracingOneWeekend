@@ -47,8 +47,8 @@ public:
 	}
 
 public:
-	color albedo;
-	double fuzz;
+	color albedo; // metal color
+	double fuzz; // reflection softness 0 sharp 1 soft.
 };
 
 class dielectric : public material {
@@ -66,6 +66,7 @@ public:
 
 		bool cannot_refract = refraction_ratio * sin_theta > 1.0; 
 		vec3 direction; 
+
 		if (cannot_refract || reflectance(cos_theta, refraction_ratio) > random_double())
 			direction = reflect(unit_direction, rec.normal); 
 		else 
